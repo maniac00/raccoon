@@ -7,8 +7,6 @@ import openpyxl  #엑셀활용위해 사용
 import schedule #주기적실행을 위해 설정
 import time #타임설정
 import gspread  #구글스프레드시트 연동을 위한 라이브러리
-import requests #카카오톡 파싱을 위한 라이브러리
-import json #카카오톡 json 파일을 위한 라이브러리
 
 # □■□■□■□■ 주기적으로 코드실행을 위한 변수
 code_execution_cnt = 0
@@ -91,45 +89,7 @@ def action_start():
 
     # 구글 엑셀시트 업데이트 
     my_sheet = useSheet.worksheet('일일 매출현황') #시트명과 동일하게 기재
-    my_sheet.update('a1','날 짜')
-    my_sheet.update('b1','현재 매출')
-    my_sheet.update(f'a{code_execution_cnt+1}', now)         #회차수 = 행 순번 / 코드시행마다 값 추가
-    my_sheet.update(f'b{code_execution_cnt+1}', total_sale + '원')
-
-    #카카오톡
-    with open('token, json','r') as kakao:
-        tokens = json.load(kakao)
-    
-    url="https://kapi.kakao.com/v2/api/talk/memo/default/send"
-    headers={
-        "Authorization" : "Bearer " + tokens["access_token"]
-    }
-    data={
-        "template_object": json.dumps({
-            "object_type":"text",
-            "text":f"{now}  / 현재 매출액 : {total_sale} 원",
-            "link":{
-                "web_url":"https://docs.google.com/spreadsheets/d/1i_ilm7ezmR7qh_PzjZBZjw7EfUH4Bezk77uZS22k7GQ/edit#gid=0"
-            }
-        })
-    }
-    response = requests.post(url, headers=headers, data=data)
-    response.status_code
-    print(f'상태 : {response.status_code} ')
-    if response.json().get('result_code') == 0:
-        print('메시지를 성공적으로 보냈습니다.')
-    else:
-        print('메시지를 성공적으로 보내지 못했습니다. 오류메시지 : ' + str(response.json()))
-
-    # 엑셀저장
-# =============================================================================
-#     if code_execution_cnt == code_execution_max:  #시행차수가 24회(execution_max)가되면 엑셀저장 및 기능 종료
-#         excel_data.save('cureent_saleprice.xlsx')
-#         excel_data.close()
-#         print(f'{code_execution_cnt} 회차 시행완료 및 코드실행 종료')  
-#         exit()
-# =============================================================================
-    #--------------------------------------------------------함수정의 끝--------------------------------------------------------
+    my_sheet.update('a1',total_sale)
 
 # □■□■□■□■ 함수실행
 # 1초에 한번씩 함수 실행 schedule.every(1).seconds.do(함수)
