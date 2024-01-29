@@ -96,7 +96,7 @@ def action_start():
 # 1분에 한번씩 함수 실행 schedule.every(1).minutes.do(함수)
 # 2시간에 한번씩 함수 실행 schedule.every(1).hours.do(함수)
 
-schedule.every(1).minutes.do(action_start)  # 1시간 마다 action_start 함수 실행
+schedule.every(1).seconds.do(action_start)  # 1시간 마다 action_start 함수 실행
 
 while True:
     schedule.run_pending()  # 함수 실행 메서드 .run_pending()
