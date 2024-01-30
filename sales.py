@@ -56,12 +56,16 @@ def action_start():
 
     # 드라이버 변수 지정
     core_driver = webdriver.Chrome(options=options)
-
+    print('checkpoint-1')
+    
     # 접속 페이지 지정
     core_driver.get("https://www.orderqueen.kr/backoffice_admin/login.itp")
-
+    print('checkpoint-2')
+    
     # 입력 : 아이디(.find_element, .send_keys) / find_element 중 id의 값이 id인 부분을 찾고 값을 입력
     core_driver.find_element(by='id', value = 'userId').send_keys(per_id)
+    print('checkpoint-3')
+
     # 입력: 비밀번호(.find_element, .send_keys) / find_element 중 id의 값이 pw인 부분을 찾고 값을 입력
     core_driver.find_element(by='id', value = 'pw').send_keys(per_pw)
     time.sleep(1)
