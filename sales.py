@@ -20,7 +20,7 @@ def action_start():
     print(f'{code_execution_cnt}회차 시작')  
 
     # 구글스프레드시트 연동을 위한 사용자 세팅
-    my_gs_json = '/root/.json/racoon-test1-8eb04ba3c39c.json'
+    my_gs_json = 'C:/Users/Administrator/raccoon/raccoon-2-f83f2a09096a.json'
     gs_account_detail = gspread.service_account(my_gs_json) #사용자 계정 json 파일 사용 및 활성화
     main_gs_sheet = 'https://docs.google.com/spreadsheets/d/1i_ilm7ezmR7qh_PzjZBZjw7EfUH4Bezk77uZS22k7GQ/edit#gid=0' #구글 사용시트 주소
     useSheet = gs_account_detail.open_by_url(main_gs_sheet) #사용자 계정이 사용하고자하는 시트 url 설정
@@ -73,7 +73,7 @@ def action_start():
     print('계정/비번 입력완료')
     print('로그인 성공')
     print(f'현재 url 주소\t:\t{core_driver.current_url}')
-    time.sleep(2)
+    time.sleep(5)
     
     # 추출 : 데이터
     total_sale = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-kiosk"]/tbody[2]/tr/td[2]').text
@@ -93,16 +93,17 @@ def action_start():
 
     # 구글 엑셀시트 업데이트 
     my_sheet = useSheet.worksheet('일일 매출현황') #시트명과 동일하게 기재
-    my_sheet.update('a1',total_sale)
+    my_sheet.update('a1', [[total_sale]])
+    print("chech point-4")
 
 # □■□■□■□■ 함수실행
 # 1초에 한번씩 함수 실행 schedule.every(1).seconds.do(함수)
 # 1분에 한번씩 함수 실행 schedule.every(1).minutes.do(함수)
 # 2시간에 한번씩 함수 실행 schedule.every(1).hours.do(함수)
 
-schedule.every(1).seconds.do(action_start)  # 1시간 마다 action_start 함수 실행
+schedule.every(1).minutes.do(action_start)  # 1시간 마다 action_start 함수 실행
 
 while True:
     schedule.run_pending()  # 함수 실행 메서드 .run_pending()
-    if code_execution_cnt == code_execution_max:  # 코드 시행 회수가 24이상되면 실행 멈춤
-        break
+    #if code_execution_cnt == code_execution_max:  # 코드 시행 회수가 24이상되면 실행 멈춤
+    #    break
