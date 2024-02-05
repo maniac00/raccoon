@@ -2,8 +2,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options        #자동꺼짐방지옵션 라이브러리
+from selenium.common.exceptions import NoSuchElementException    # 셀레니움 예외처리
 from datetime import datetime
-import openpyxl  #엑셀활용위해 사용
+#import openpyxl  #엑셀활용위해 사용
 import schedule #주기적실행을 위해 설정
 import time #타임설정
 import gspread  #구글스프레드시트 연동을 위한 라이브러리
@@ -42,8 +43,8 @@ def action_start():
     # 기본값 변수지정
     per_id = '3462901380'
     per_pw = '1234567890'
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    now_YMD = datetime.now().strftime('%Y-%m-%d')
+    # now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # now_YMD = datetime.now().strftime('%Y-%m-%d')
     
     # 브라우저 자동 꺼짐옵션지정
     chrome_options = Options()
