@@ -76,20 +76,25 @@ def action_start():
     time.sleep(5)
     
     # 추출 : 데이터
-    total_sale = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-kiosk"]/tbody[2]/tr/td[2]').text
-    print(f'{now} 누적매출액(당일기준)\t:\t{total_sale} 원')
-    p = 0
-    for v in range(1,25):
-        time_zone = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-time"]/tbody[1]/tr['+ str(v) + ']/td[1]').text
-        sale_cnt =  core_driver.find_element(By.XPATH, value = '//*[@id="tbl-time"]/tbody[1]/tr['+ str(v) + ']/td[3]').text
-        time_sale = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-time"]/tbody[1]/tr[' + str(v) + ']/td[2]').text
-        time_sale_int = int(time_sale.replace(',',''))
-        p += time_sale_int
+    try:
+        total_sale = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-kiosk"]/tbody[2]/tr/td[2]').text
+    except NoSuchElementException:
+        pass
+        
+    
+    # print(f'{now} 누적매출액(당일기준)\t:\t{total_sale} 원')
+    # p = 0
+    # for v in range(1,25):
+    #     time_zone = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-time"]/tbody[1]/tr['+ str(v) + ']/td[1]').text
+    #     sale_cnt =  core_driver.find_element(By.XPATH, value = '//*[@id="tbl-time"]/tbody[1]/tr['+ str(v) + ']/td[3]').text
+    #     time_sale = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-time"]/tbody[1]/tr[' + str(v) + ']/td[2]').text
+    #     time_sale_int = int(time_sale.replace(',',''))
+    #     p += time_sale_int
 # =============================================================================
 #         excel_sheet.append([now, time_zone, sale_cnt, time_sale, p])
 # =============================================================================
-        print(f'시간대 : {time_zone}\t 판매건수 : {sale_cnt}\t 매출액 : {time_sale} 원\t 소계 : {p} 원')
-    print(f'{now} 데이터 갱신 완료 / 현시간까지 소계 : {p} 원')
+    #     print(f'시간대 : {time_zone}\t 판매건수 : {sale_cnt}\t 매출액 : {time_sale} 원\t 소계 : {p} 원')
+    # print(f'{now} 데이터 갱신 완료 / 현시간까지 소계 : {p} 원')
 
     # 구글 엑셀시트 업데이트 
     my_sheet = useSheet.worksheet('일일 매출현황') #시트명과 동일하게 기재
