@@ -8,10 +8,40 @@ from selenium.common.exceptions import NoSuchElementException    # 셀레니움 
 import schedule #주기적실행을 위해 설정
 import time #타임설정
 import gspread  #구글스프레드시트 연동을 위한 라이브러리
+import sys
+import logging
+import logging.handlers
+
+from rich.logging import RichHandler
+
+LOG_PATH = "./log.log"
+RICH_FORMAT = "[%(filename)s:%(lineno)s] >> %(message)s"
+FILE_HANDLER_FORMAT = "[%(asctime)s]\\t%(levelname)s\\t[%(filename)s:%(funcName)s:%(lineno)s]\\t>> %(message)s"
+
 
 # □■□■□■□■ 주기적으로 코드실행을 위한 변수
 code_execution_cnt = 0
 code_execution_max = 24  #24시간 기준으로 24지정
+
+def set_logger() -> logging.Logger:
+    logging.basicConfig(
+        level="NOTSET",
+        format=RICH_FORMAT,
+        handlers=[RichHandler(rich_tracebacks=True)]
+    )
+    logger = logging.getLogger("rich")
+
+    file_handler = logging.FileHandler(LOG_PATH, mode="a", encoding="utf-8")
+    file_handler.setFormatter(logging.Formatter(FILE_HANDLER_FORMAT))
+    logger.addHandler(file_handler)
+
+    return logger
+
+def handle_exception(exc_type, exc_value, exc_traceback):
+    logger = logging.getLogger("rich")
+
+    logger.error("Unexpected exception",
+                 exc_info=(exc_type, exc_value, exc_traceback))
 
 # □■□■□■□■ 함수정의
 def action_start():
@@ -21,10 +51,13 @@ def action_start():
     print(f'{code_execution_cnt}회차 시작')  
 
     # 구글스프레드시트 연동을 위한 사용자 세팅
-    my_gs_json = 'C:/Users/Administrator/raccoon/raccoon-2-f83f2a09096a.json'
-    gs_account_detail = gspread.service_account(my_gs_json) #사용자 계정 json 파일 사용 및 활성화
-    main_gs_sheet = 'https://docs.google.com/spreadsheets/d/1i_ilm7ezmR7qh_PzjZBZjw7EfUH4Bezk77uZS22k7GQ/edit#gid=0' #구글 사용시트 주소
-    useSheet = gs_account_detail.open_by_url(main_gs_sheet) #사용자 계정이 사용하고자하는 시트 url 설정
+    try:       
+        my_gs_json = 'C:/Users/Administrator/raccoon/raccoon-2-f83f2a09096a.json'
+        gs_account_detail = gspread.service_account(my_gs_json) #사용자 계정 json 파일 사용 및 활성화
+        main_gs_sheet = 'https://docs.google.com/spreadsheets/d/1i_ilm7ezmR7qh_PzjZBZjw7EfUH4Bezk77uZS22k7GQ/edit#gid=0' #구글 사용시트 주소
+        useSheet = gs_account_detail.open_by_url(main_gs_sheet) #사용자 계정이 사용하고자하는 시트 url 설정
+    except gspread.exceptions.APIError:
+        pass
     print('구글 스프레드시트 연동 성공')
 
     # 엑셀파일 세팅
@@ -102,14 +135,26 @@ def action_start():
     my_sheet.update('a1', [[total_sale]])
     print("chech point-4")
 
+
+
+
+
+
 # □■□■□■□■ 함수실행
 # 1초에 한번씩 함수 실행 schedule.every(1).seconds.do(함수)
 # 1분에 한번씩 함수 실행 schedule.every(1).minutes.do(함수)
 # 2시간에 한번씩 함수 실행 schedule.every(1).hours.do(함수)
 
-schedule.every(1).minutes.do(action_start)  # 1시간 마다 action_start 함수 실행
+def main():
+    logger = set_logger()
+    sys.excepthook = handle_exception    
 
-while True:
-    schedule.run_pending()  # 함수 실행 메서드 .run_pending()
-    #if code_execution_cnt == code_execution_max:  # 코드 시행 회수가 24이상되면 실행 멈춤
-    #    break
+    schedule.every(1).minutes.do(action_start)  # 1시간 마다 action_start 함수 실행
+    while True:
+        schedule.run_pending()  # 함수 실행 메서드 .run_pending()
+        #if code_execution_cnt == code_execution_max:  # 코드 시행 회수가 24이상되면 실행 멈춤
+        #    break
+
+if __name__ == '__main__':
+    
+    main()
