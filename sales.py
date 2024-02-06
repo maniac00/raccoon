@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options        #자동꺼짐방지옵션 라이브러리
 from selenium.common.exceptions import NoSuchElementException    # 셀레니움 예외처리
-from datetime import datetime
+#from datetime import datetime
 #import openpyxl  #엑셀활용위해 사용
 import schedule #주기적실행을 위해 설정
 import time #타임설정
@@ -79,7 +79,7 @@ def action_start():
     # 추출 : 데이터
     try:
         total_sale = core_driver.find_element(By.XPATH, value = '//*[@id="tbl-kiosk"]/tbody[2]/tr/td[2]').text
-    except NoSuchElementException:
+    except (NoSuchElementException, UnboundLocalError):
         pass
         
     
