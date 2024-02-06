@@ -25,7 +25,7 @@ code_execution_max = 24  #24시간 기준으로 24지정
 
 def set_logger() -> logging.Logger:
     logging.basicConfig(
-        level="NOTSET",
+        level="INFO",
         format=RICH_FORMAT,
         handlers=[RichHandler(rich_tracebacks=True)]
     )
