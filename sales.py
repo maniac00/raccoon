@@ -130,15 +130,14 @@ def action_start():
     #     print(f'시간대 : {time_zone}\t 판매건수 : {sale_cnt}\t 매출액 : {time_sale} 원\t 소계 : {p} 원')
     # print(f'{now} 데이터 갱신 완료 / 현시간까지 소계 : {p} 원')
 
-    # 구글 엑셀시트 업데이트 
-    my_sheet = useSheet.worksheet('일일 매출현황') #시트명과 동일하게 기재
-    my_sheet.update('a1', [[total_sale]])
+    # 구글 엑셀시트 업데이트
+    try:        
+        my_sheet = useSheet.worksheet('일일 매출현황') #시트명과 동일하게 기재
+        my_sheet.update('a1', [[total_sale]])
+    except (NoSuchElementException, UnboundLocalError):
+        pass
+
     print("chech point-4")
-
-
-
-
-
 
 # □■□■□■□■ 함수실행
 # 1초에 한번씩 함수 실행 schedule.every(1).seconds.do(함수)
