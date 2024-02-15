@@ -1,8 +1,11 @@
 # 필요 라이브러리 호출
+import warnings
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options        #자동꺼짐방지옵션 라이브러리
 from selenium.common.exceptions import NoSuchElementException    # 셀레니움 예외처리
+from webdriver_manager.chrome import ChromeDriverManager
 import time #타임설정
 import gspread  #구글스프레드시트 연동을 위한 라이브러리
 import sys
@@ -10,6 +13,8 @@ import logging
 import logging.handlers
 
 from rich.logging import RichHandler
+
+warnings.filterwarnings(action='ignore')
 
 LOG_PATH = "./log.log"
 RICH_FORMAT = "[%(filename)s:%(lineno)s] >> %(message)s"
@@ -40,7 +45,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 def action_start():
     # 구글스프레드시트 연동을 위한 사용자 세팅
     try:       
-        my_gs_json = 'C:/Users/Administrator/raccoon/raccoon-2-f83f2a09096a.json'
+        my_gs_json = '/root/raccoon/raccoon-2-f83f2a09096a.json'
         gs_account_detail = gspread.service_account(my_gs_json) #사용자 계정 json 파일 사용 및 활성화
         main_gs_sheet = 'https://docs.google.com/spreadsheets/d/1i_ilm7ezmR7qh_PzjZBZjw7EfUH4Bezk77uZS22k7GQ/edit#gid=0' #구글 사용시트 주소
         useSheet = gs_account_detail.open_by_url(main_gs_sheet) #사용자 계정이 사용하고자하는 시트 url 설정
@@ -57,6 +62,9 @@ def action_start():
     # 브라우저 자동 꺼짐옵션지정
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    service = Service(executable_path=ChromeDriverManager().install())
+
 
     # 셀레니움옵션기능 활성화
     options = webdriver.ChromeOptions()
@@ -64,7 +72,7 @@ def action_start():
     print('드라이버 실행 / 창옵션 숨김 완료')
 
     # 드라이버 변수 지정
-    core_driver = webdriver.Chrome(options=options)
+    core_driver = webdriver.Chrome(service=service, options=options)
     print('checkpoint-1')
     
     # 접속 페이지 지정
