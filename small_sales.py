@@ -45,7 +45,7 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 def action_start():
     # 구글스프레드시트 연동을 위한 사용자 세팅
     try:       
-        my_gs_json = '/root/raccoon/raccoon-2-f83f2a09096a.json'
+        my_gs_json = '/Users/kimsungwook/raccoon/raccoon-2-f83f2a09096a.json'
         gs_account_detail = gspread.service_account(my_gs_json) #사용자 계정 json 파일 사용 및 활성화
         main_gs_sheet = 'https://docs.google.com/spreadsheets/d/1i_ilm7ezmR7qh_PzjZBZjw7EfUH4Bezk77uZS22k7GQ/edit#gid=0' #구글 사용시트 주소
         useSheet = gs_account_detail.open_by_url(main_gs_sheet) #사용자 계정이 사용하고자하는 시트 url 설정
