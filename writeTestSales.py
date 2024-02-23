@@ -11,7 +11,7 @@ def main():
     # 구글 스프레드시트에서 매출값 가져오기
     my_sheet = useSheet.worksheet('일일 매출현황') #시트명과 동일하게 기재
     value = my_sheet.acell('A1').value.replace(',','')+'원'
-    with open("sales_now.txt", "w") as file:
+    with open("/root/raccoon/sales_now.txt", "w") as file:
         file.write(value)
 
 if __name__ == "__main__":
