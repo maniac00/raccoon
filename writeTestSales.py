@@ -13,7 +13,7 @@ def main():
     value = my_sheet.acell('A1').value
     if value is None:
         value = '0원'
-    elif value < 1000:
+    elif len(value) < 4:
         value = value + '원'
     else:
         value = value.replace(',','')+'원'
